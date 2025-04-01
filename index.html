@@ -8,6 +8,7 @@
         table { width: 100%; border-collapse: collapse; }
         th, td { border: 1px solid black; padding: 8px; text-align: left; }
         th { background-color: #f2f2f2; }
+        .color-box { width: 5px; }
     </style>
 </head>
 <body>
@@ -23,7 +24,7 @@
                 <th>ประเภท</th>
                 <th>เขต</th>
                 <th>ชื่อ นามสกุล</th>
-                <th>กลุ่ม</th>
+                <th colspan="2">กลุ่ม</th>
                 <th>เบอร์</th>
             </tr>
         </thead>
@@ -49,7 +50,6 @@
             tableBody.innerHTML = "";
             data.forEach((item, index) => {
                 const row = document.createElement("tr");
-                row.style.backgroundColor = item.color || "white";
                 row.innerHTML = `
                     <td>${index + 1}</td>
                     <td>${item.district}</td>
@@ -58,6 +58,7 @@
                     <td>${item.type}</td>
                     <td>${item.area}</td>
                     <td>${item.name || "-"}</td>
+                    <td class="color-box" style="background-color: ${item.color || 'white'};"></td>
                     <td>${item.group || "-"}</td>
                     <td>${item.number}</td>
                 `;

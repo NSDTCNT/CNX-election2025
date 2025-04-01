@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ค้นหาข้อมูล</title>
+    <style>
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid black; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h2>ค้นหาข้อมูล</h2>
+    <input type="text" id="search" placeholder="ค้นหาจากอำเภอ, ตำบล หรือเทศบาล" oninput="filterData()">
+    <table>
+        <thead>
+            <tr>
+                <th>ลำดับ</th>
+                <th>อำเภอ</th>
+                <th>ตำบล</th>
+                <th>เทศบาล</th>
+                <th>ประเภท</th>
+                <th>เขต</th>
+                <th>ชื่อ นามสกุล</th>
+                <th>กลุ่ม</th>
+                <th>เบอร์</th>
+            </tr>
+        </thead>
+        <tbody id="data-table"></tbody>
+    </table>
+
+    <script>
+        let allData = [];
+
+        async function fetchData() {
+            const url = "https://script.google.com/macros/s/AKfycbzw9LFFxEYepsNnWCiQVqTTHNe4xmLsCDkWm2fNleYpUZCYqjDJOt4G3hF773XjgjAa/exec";
+            try {
+                const response = await fetch(url);
+                allData = await response.json();
+                renderTable(allData);
+            } catch (error) {
+                console.error("เกิดข้อผิดพลาดในการดึงข้อมูล: ", error);
+            }
+        }
+
+        function renderTable(data) {
+            const tableBody = document.getElementById("data-table");
+            tableBody.innerHTML = "";
+            data.forEach((item, index) => {
+                const row = document.createElement("tr");
+                row.style.backgroundColor = item.color || "white";
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${item.district}</td>
+                    <td>${item.subdistrict}</td>
+                    <td>${item.municipality}</td>
+                    <td>${item.type}</td>
+                    <td>${item.area}</td>
+                    <td>${item.name || "-"}</td>
+                    <td>${item.group || "-"}</td>
+                    <td>${item.number}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function filterData() {
+            const query = document.getElementById("search").value.toLowerCase();
+            const filtered = allData.filter(item =>
+                item.district.toLowerCase().includes(query) ||
+                item.subdistrict.toLowerCase().includes(query) ||
+                item.municipality.toLowerCase().includes(query)
+            );
+            renderTable(filtered);
+        }
+
+        fetchData();
+    </script>
+</body>
+</html>
